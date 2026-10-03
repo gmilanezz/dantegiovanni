@@ -2,6 +2,7 @@ import os, uuid
 from datetime import datetime, timedelta, date
 from typing import Optional, List
 from fastapi import FastAPI, Depends, HTTPException, UploadFile, File
+from fastapi.responses import FileResponse 
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.staticfiles import StaticFiles
@@ -23,6 +24,8 @@ from jose import jwt, JWTError
 from pydantic import BaseModel
 
 BASE = os.path.dirname(__file__)
+FRONTEND = os.path.abspath(os.path.join(BASE, "..", "frontend"))
+
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 if DATABASE_URL:
@@ -517,3 +520,14 @@ def student_photos(sid: int, u=Depends(me), s: Session = Depends(db)):
         .all()
     )
     return [{"id": x.id, "path": x.path, "created_at": x.created_at} for x in rows]
+
+@app.get("/")
+def frontend_index():
+    return FileResponse(os.path.join(FRONTEND, "index.html"))
+
+
+app.mount(
+    "/",
+    StaticFiles(directory=FRONTEND, html=True),
+    name="frontend",
+)
