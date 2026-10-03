@@ -4,23 +4,17 @@ __pycache__/
 *.pyd
 *.so
 
-# Ambiente virtual
 .venv/
 venv/
 env/
 ENV/
 backend/.venv/
 
-# Cache / testes Python
-.pytest_cache/
 .mypy_cache/
 .ruff_cache/
 .coverage
 htmlcov/
 
-# --------------------
-# Banco de dados local
-# --------------------
 *.db
 *.sqlite
 *.sqlite3
@@ -28,15 +22,9 @@ htmlcov/
 # Banco atual do Dante Fit
 backend/dante.db
 
-# --------------------
-# Uploads dos usuários
-# --------------------
 backend/uploads/*
 !backend/uploads/.gitkeep
 
-# --------------------
-# Variáveis de ambiente / segredos
-# --------------------
 .env
 .env.*
 !.env.example
@@ -49,42 +37,24 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-# --------------------
-# Build / cache
-# --------------------
 dist/
 build/
 .cache/
 .parcel-cache/
 .vite/
 
-# --------------------
-# gh-pages
-# --------------------
 node_modules/.cache/gh-pages/
 
-# --------------------
-# VS Code / IDE
-# --------------------
 .vscode/
 .idea/
 
-# --------------------
-# Windows
-# --------------------
 Thumbs.db
 Thumbs.db:encryptable
 Desktop.ini
 $RECYCLE.BIN/
 
-# --------------------
-# macOS
-# --------------------
 .DS_Store
 
-# --------------------
-# Arquivos temporários
-# --------------------
 *.tmp
 *.temp
 *.log
@@ -92,7 +62,4 @@ $RECYCLE.BIN/
 *.swp
 *~
 
-# --------------------
-# ZIPs
-# --------------------
 *.zip
