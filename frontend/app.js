@@ -1,4 +1,4 @@
-const API = localStorage.API_URL || "http://localhost:8000/api";
+const API = "/api";
 let token = localStorage.token,
   user = JSON.parse(localStorage.user || "null"),
   tab = "agenda";
