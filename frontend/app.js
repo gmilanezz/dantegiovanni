@@ -106,8 +106,14 @@ function menuItems() {
     : [["agenda","▦","Minha agenda"],["time","◫","Agenda do time"],["alunos","◎","Alunos"],["fotos","▣","Fotos dos alunos"],["contato","@","Contato"]];
 }
 function nav() {
-  return `<header class="topbar"><button class="menu-button" onclick="toggleMenu(true)" aria-label="Abrir menu">☰</button><div class="brand-inline nav-logo-only">${logo()}</div><div class="user-chip"><div><b>${user.name}</b><span>${user.role}</span></div></div></header><div class="menu-overlay" onclick="toggleMenu(false)"></div><aside class="sidebar"><div class="sidebar-head">${logo()}<button class="menu-close" onclick="toggleMenu(false)">×</button></div><div class="profile"><b>${user.name}</b><span>${user.role === "student" ? "Aluno" : "Time Dante Giovanni"}</span></div><nav class="side-nav">${menuItems().map(x=>`<button class="side-link ${tab===x[0]?"active":""}" onclick="tab='${x[0]}';toggleMenu(false);render()"><i>${x[1]}</i><span>${x[2]}</span></button>`).join("")}</nav><button class="side-link logout" onclick="logout()"><i>↪</i><span>Sair</span></button></aside>`;
+  return `<header class="topbar"><button class="menu-button" onclick="toggleMenu(true)" aria-label="Abrir menu">☰</button><div class="brand-inline nav-logo-only">${logo()}</div><div class="user-chip"><div><b>${user.name}</b><span>${user.role}</span></div></div></header><div class="menu-overlay" onclick="toggleMenu(false)"></div><aside class="sidebar"><div class="sidebar-head">${logo()}<button class="menu-close" onclick="toggleMenu(false)">×</button></div><div class="profile"><b>${user.name}</b><span>${user.role === "student" ? "Aluno" : "Time Dante Giovanni"}</span></div><nav class="side-nav">${menuItems().map(x=>`<button class="side-link ${tab===x[0]?"active":""}" onclick="setTab('${x[0]}')><i>${x[1]}</i><span>${x[2]}</span></button>`).join("")}</nav><button class="side-link logout" onclick="logout()"><i>↪</i><span>Sair</span></button></aside>`;
 }
+function setTab(nextTab) {
+  tab = nextTab;
+  toggleMenu(false);
+  render();
+}
+
 function toggleMenu(open) {
   document.body.classList.toggle("menu-open", open);
 }
@@ -284,4 +290,24 @@ function logout() {
   user = null;
   login();
 }
+
+// Funções usadas pelos atributos onclick do HTML gerado dinamicamente.
+// Como app.js é carregado como ES module no Vite, elas precisam ser
+// expostas explicitamente no objeto window.
+Object.assign(window, {
+  login,
+  forgotPassword,
+  register,
+  setTab,
+  toggleMenu,
+  delLesson,
+  workout,
+  treino,
+  treinoDetalhe,
+  startWorkoutTimer,
+  finishWorkoutTimer,
+  openStudentPhotos,
+  logout,
+});
+
 render();
