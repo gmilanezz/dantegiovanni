@@ -15,6 +15,7 @@ from sqlalchemy import (
     ForeignKey,
     Text,
     Boolean,
+    text,
 )
 from sqlalchemy.orm import declarative_base, sessionmaker, Session
 from passlib.context import CryptContext
@@ -63,7 +64,8 @@ class Lesson(Base):
     __tablename__ = "lessons"
     id = Column(Integer, primary_key=True)
     professor_id = Column(Integer, ForeignKey("users.id"))
-    student_id = Column(Integer, ForeignKey("users.id"))
+    student_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    student_name = Column(String, default="")
     weekday = Column(Integer)
     time = Column(String)
     note = Column(String, default="")
@@ -105,6 +107,18 @@ class Photo(Base):
 
 
 Base.metadata.create_all(engine)
+
+# Migração idempotente para bancos já existentes.
+with engine.begin() as conn:
+    if DB.startswith("sqlite"):
+        lesson_columns = {row[1] for row in conn.execute(text("PRAGMA table_info(lessons)"))}
+    else:
+        lesson_columns = {row[0] for row in conn.execute(text(
+            "SELECT column_name FROM information_schema.columns WHERE table_name = 'lessons'"
+        ))}
+    if "student_name" not in lesson_columns:
+        conn.execute(text("ALTER TABLE lessons ADD COLUMN student_name VARCHAR DEFAULT ''"))
+
 app = FastAPI(title="Dante Giovanni Training API")
 app.add_middleware(
     CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"]
@@ -168,7 +182,7 @@ class ResetPasswordIn(BaseModel):
 
 
 class LessonIn(BaseModel):
-    student_id: int
+    student_name: str
     weekday: int
     time: str
     note: str = ""
@@ -340,9 +354,9 @@ def del_student(sid: int, u=Depends(me), s: Session = Depends(db)):
 
 
 @app.get("/api/lessons")
-def lessons(u=Depends(me), s: Session = Depends(db)):
+def lessons(team: bool = False, u=Depends(me), s: Session = Depends(db)):
     q = s.query(Lesson)
-    if u.role == "professor":
+    if u.role == "professor" and not team:
         q = q.filter(Lesson.professor_id == u.id)
     elif u.role == "student":
         q = q.filter(Lesson.student_id == u.id)
@@ -353,7 +367,7 @@ def lessons(u=Depends(me), s: Session = Depends(db)):
             "professor_id": x.professor_id,
             "professor": users.get(x.professor_id),
             "student_id": x.student_id,
-            "student": users.get(x.student_id),
+            "student": x.student_name or users.get(x.student_id) or "Aluno",
             "weekday": x.weekday,
             "time": x.time,
             "note": x.note,
@@ -365,10 +379,10 @@ def lessons(u=Depends(me), s: Session = Depends(db)):
 @app.post("/api/lessons")
 def add_lesson(x: LessonIn, u=Depends(me), s: Session = Depends(db)):
     allow_prof(u)
-    st = s.get(User, x.student_id)
-    if not st or (u.role != "admin" and st.professor_id != u.id):
-        raise HTTPException(403)
-    a = Lesson(professor_id=u.id, **x.model_dump())
+    student_name = x.student_name.strip()
+    if not student_name:
+        raise HTTPException(400, "Informe o nome do aluno.")
+    a = Lesson(professor_id=u.id, student_id=None, student_name=student_name, weekday=x.weekday, time=x.time, note=x.note)
     s.add(a)
     s.commit()
     return {"id": a.id}

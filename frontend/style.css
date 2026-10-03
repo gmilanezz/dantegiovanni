@@ -12,21 +12,21 @@
 * {
   box-sizing: border-box;
 }
-html,
-body {
+.app-html,
+.app-.app-body {
   min-height: 100%;
 }
-body {
+.app-body {
   margin: 0;
   background: #030303;
   color: var(--text);
   font-family: "Montserrat", sans-serif;
   font-weight: 600;
 }
-button,
-input,
-select,
-textarea {
+.ui-button,
+.form-control,
+.form-select,
+.form-textarea {
   font: inherit;
 }
 .shell {
@@ -52,22 +52,6 @@ textarea {
   align-items: center;
   gap: 12px;
 }
-.brand-inline strong {
-  display: block;
-  font-family: "Bebas Neue", "Montserrat", sans-serif;
-  font-size: 20px;
-  line-height: 1;
-  letter-spacing: 0.045em;
-}
-.brand-inline small {
-  display: block;
-  color: var(--muted);
-  font-size: 10px;
-  margin-top: 4px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-}
 .brand-mark {
   width: 38px;
   height: 38px;
@@ -92,16 +76,16 @@ textarea {
 .user-chip div {
   text-align: right;
 }
-.user-chip b,
-.user-chip span {
+.user-name,
+.user-role {
   display: block;
 }
-.user-chip b {
+.user-name {
   font-size: 13px;
   font-weight: 600;
 }
-.user-chip span {
-  font-size: 10px;
+.user-role {
+  font-size: 12px;
   color: var(--accent);
   text-transform: uppercase;
   font-weight: 600;
@@ -117,8 +101,7 @@ textarea {
 .eyebrow {
   display: none;
 }
-.page-title h1,
-h1 {
+.page-heading {
   font-family: "Bebas Neue", "Montserrat", sans-serif;
   font-size: 38px;
   line-height: 0.98;
@@ -127,7 +110,7 @@ h1 {
   letter-spacing: 0.035em;
   text-transform: uppercase;
 }
-h2 {
+.section-heading {
   font-family: "Bebas Neue", "Montserrat", sans-serif;
   font-size: 25px;
   line-height: 1;
@@ -171,14 +154,14 @@ h2 {
   gap: 7px;
   margin: 11px 0;
   color: #fff;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.045em;
 }
-input,
-select,
-textarea {
+.form-control,
+.form-select,
+.form-textarea {
   width: 100%;
   background: #050505;
   color: #fff;
@@ -189,13 +172,13 @@ textarea {
   transition: 0.18s;
   font-weight: 700;
 }
-input:focus,
-select:focus,
-textarea:focus {
+.form-control:focus,
+.form-select:focus,
+.form-textarea:focus {
   border-color: #fff;
   box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.08);
 }
-textarea {
+.form-textarea {
   min-height: 120px;
   resize: vertical;
 }
@@ -238,18 +221,7 @@ textarea {
 }
 .btn.compact {
   padding: 8px 12px;
-  font-size: 11px;
-}
-.pill {
-  display: inline-flex;
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  color: #fff;
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: 999px;
-  padding: 5px 8px;
+  font-size: 13px;
 }
 .list {
   display: grid;
@@ -265,7 +237,7 @@ textarea {
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 12px;
 }
-.row b {
+.row-title {
   font-size: 14px;
   font-weight: 600;
 }
@@ -300,10 +272,10 @@ textarea {
   border-radius: 6px 6px 2px 2px;
   position: relative;
 }
-.bar span {
+.bar-label {
   position: absolute;
   bottom: -19px;
-  font-size: 9px;
+  font-size: 12px;
   color: var(--muted);
   left: 50%;
   transform: translateX(-50%);
@@ -328,7 +300,7 @@ textarea {
   width: 48px;
   height: 48px;
 }
-.auth-card h1 {
+.auth-card .page-heading {
   font-size: 40px;
 }
 .auth-divider {
@@ -336,7 +308,7 @@ textarea {
   align-items: center;
   gap: 10px;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -359,7 +331,7 @@ textarea {
   border: 0;
   color: #fff;
   padding: 0;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 900;
   cursor: pointer;
   text-transform: uppercase;
@@ -401,7 +373,7 @@ textarea {
   .page-title {
     margin: 5px 0 17px;
   }
-  .page-title h1 {
+  .page-title .page-heading {
     font-size: 33px;
   }
   .card {
@@ -429,10 +401,10 @@ textarea {
     left: 0;
     top: 0;
     z-index: 40;
-    width: 60%;
+    width: 88%;
     height: 100%;
-    min-width: 230px;
-    max-width: 310px;
+    min-width: 300px;
+    max-width: 410px;
     background: #030303;
     border-right: 1px solid rgba(255, 255, 255, 0.3);
     padding: 14px;
@@ -465,11 +437,11 @@ textarea {
     gap: 4px;
     padding: 15px 4px;
   }
-  .profile b {
+  .profile-name {
     font-weight: 600;
   }
-  .profile span {
-    font-size: 10px;
+  .profile-role {
+    font-size: 12px;
     color: var(--muted);
     font-weight: 600;
     text-transform: uppercase;
@@ -492,11 +464,13 @@ textarea {
     text-align: left;
     font-weight: 900;
     text-transform: uppercase;
-    font-size: 11px;
-    letter-spacing: 0.035em;
+    font-size: 16px;
+    letter-spacing: 0.025em;
   }
-  .side-link i {
-    width: 22px;
+  .side-icon {
+    width: 28px;
+    min-width: 28px;
+    font-size: 16px;
     color: #fff;
     font-style: normal;
     text-align: center;
@@ -511,7 +485,7 @@ textarea {
     color: #fff;
     border-color: rgba(255, 255, 255, 0.18);
   }
-  .side-link.logout i {
+  .side-link.logout .side-icon {
     color: #fff;
   }
 }
@@ -540,7 +514,7 @@ textarea {
 .brand-logo {
   width: 48px;
   height: 48px;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 12px;
   display: block;
 }
@@ -550,8 +524,9 @@ textarea {
   margin: auto;
 }
 .sidebar-head .brand-logo {
-  width: 58px;
-  height: 58px;
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
 }
 .row-actions,
 .workout-actions {
@@ -583,20 +558,20 @@ textarea {
   border-color: #fff;
   transform: translateY(-1px);
 }
-.workout-link span {
+.workout-link-title {
   font-family: "Bebas Neue", "Montserrat", sans-serif;
   font-size: 26px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
-.workout-link b {
-  font-size: 10px;
+.workout-link-action {
+  font-size: 12px;
   letter-spacing: 0.1em;
 }
 .workout-detail {
   max-width: 780px;
 }
-.workout-detail h2 {
+.workout-detail .section-heading {
   font-size: 36px;
   margin-top: 14px;
 }
@@ -613,13 +588,13 @@ textarea {
   justify-content: space-between;
   gap: 16px;
 }
-.timer-box span {
-  font-size: 10px;
+.timer-label {
+  font-size: 12px;
   letter-spacing: 0.12em;
   color: var(--muted);
   font-weight: 600;
 }
-.timer-box strong {
+.timer-value {
   font-family: "Bebas Neue", "Montserrat", sans-serif;
   font-size: 42px;
   letter-spacing: 0.06em;
@@ -637,15 +612,15 @@ textarea {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
 }
-.photo-grid a {
+.photo-link {
   display: grid;
   gap: 7px;
   color: #fff;
   text-decoration: none;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
 }
-.photo-grid img {
+.photo-image {
   width: 100%;
   aspect-ratio: 3/4;
   object-fit: cover;
@@ -682,13 +657,13 @@ textarea {
 .contact-link:hover {
   border-color: #fff;
 }
-.contact-link b {
+.contact-name {
   font-family: "Bebas Neue", "Montserrat", sans-serif;
   font-size: 24px;
   letter-spacing: 0.05em;
 }
-.contact-link span {
-  font-size: 11px;
+.contact-description {
+  font-size: 13px;
   color: var(--muted);
 }
 .contact-link.disabled {
@@ -702,8 +677,9 @@ textarea {
     padding-top: 30px;
   }
   .brand-inline .brand-logo {
-    width: 40px;
-    height: 40px;
+    width: 58px;
+    height: 58px;
+    object-fit: contain;
   }
   .photo-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -711,14 +687,14 @@ textarea {
   .workout-link {
     padding: 15px;
   }
-  .workout-link span {
+  .workout-link-title {
     font-size: 22px;
   }
   .timer-box {
     align-items: flex-start;
     flex-direction: column;
   }
-  .timer-box strong {
+  .timer-value {
     font-size: 38px;
   }
   .contact-card > .brand-logo {
@@ -728,7 +704,7 @@ textarea {
 }
 
 /* V7 typography/navigation adjustments */
-button,
+.ui-button,
 .btn,
 .text-btn,
 .forgot-link,
@@ -736,14 +712,14 @@ button,
 .menu-button,
 .menu-close {
   font-family: "Bebas Neue", "Montserrat", sans-serif;
-  letter-spacing: 0.055em;
+  letter-spacing: 0.04em;
 }
 .menu-button {
-  width: 52px;
-  min-width: 52px;
-  height: 46px;
+  width: 72px;
+  min-width: 72px;
+  height: 50px;
   padding: 0;
-  font-size: 30px;
+  font-size: 32px;
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -752,9 +728,52 @@ button,
   gap: 0;
 }
 .nav-logo-only .brand-logo {
-  width: 46px;
-  height: 46px;
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
 }
-.auth-card h1.accent {
+.auth-card .page-heading.accent {
   color: var(--accent);
+}
+
+.workout-periodization { margin: 0 0 10px; color: var(--muted); font-size: 13px; line-height: 1.4; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+
+.side-label {
+  font-size: inherit;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+.menu-button {
+  --hamburger-width: 32px;
+  --hamburger-height: 22px;
+  --hamburger-line-height: 3px;
+
+  width: calc(var(--hamburger-width) + 26px);
+  min-width: calc(var(--hamburger-width) + 26px);
+  height: 56px;
+  padding: 0 13px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.hamburger-icon {
+  width: var(--hamburger-width);
+  height: var(--hamburger-height);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 0 0 var(--hamburger-width);
+}
+
+.hamburger-line {
+  display: block;
+  width: 100%;
+  height: var(--hamburger-line-height);
+  background: #fff;
+  border-radius: 999px;
 }

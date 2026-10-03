@@ -1,5 +1,9 @@
 código-padrão: DG5A1
 
 cd backend
+python -m venv .venv
 .\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+Remove-Item Env:DATABASE_URL -ErrorAction SilentlyContinue
 python -m uvicorn main:app --reload

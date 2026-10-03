@@ -35,3 +35,35 @@ localStorage.DANTE_INSTAGRAM = "https://instagram.com/SEU_USUARIO";
 localStorage.DANTE_WHATSAPP = "https://wa.me/55DDDNUMERO";
 location.reload();
 ```
+
+
+## Execucao local
+
+O ambiente local usa SQLite (`backend/dante.db`) e o Vite encaminha `/api` para o FastAPI em `127.0.0.1:8000`.
+
+### Inicio automatico (Windows PowerShell)
+
+```powershell
+.\iniciar-local.ps1
+```
+
+### Inicio manual
+
+Backend:
+```powershell
+cd backend
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+Remove-Item Env:DATABASE_URL -ErrorAction SilentlyContinue
+python -m uvicorn main:app --reload --host 127.0.0.1 --port 8000
+```
+
+Frontend, em outro terminal:
+```powershell
+cd frontend
+npm install
+npm run dev
+```
+
+Acesse `http://127.0.0.1:5173`.
