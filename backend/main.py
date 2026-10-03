@@ -1,11 +1,9 @@
-import os, uuid
+import os, uuid, base64
 from datetime import datetime, timedelta, date
 from typing import Optional, List
 from fastapi import FastAPI, Depends, HTTPException, UploadFile, File
-from fastapi.responses import FileResponse 
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from fastapi.staticfiles import StaticFiles
 from sqlalchemy import (
     create_engine,
     Column,
@@ -24,7 +22,6 @@ from jose import jwt, JWTError
 from pydantic import BaseModel
 
 BASE = os.path.dirname(__file__)
-FRONTEND = os.path.abspath(os.path.join(BASE, "..", "frontend"))
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
@@ -112,10 +109,6 @@ app = FastAPI(title="Dante Giovanni Training API")
 app.add_middleware(
     CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"]
 )
-UPLOAD = os.path.join(BASE, "uploads")
-os.makedirs(UPLOAD, exist_ok=True)
-app.mount("/uploads", StaticFiles(directory=UPLOAD), name="uploads")
-
 
 def db():
     s = SessionLocal()
@@ -490,18 +483,26 @@ async def photos(
     if not files:
         raise HTTPException(400, "Selecione ao menos uma foto")
     saved = []
+    allowed = {
+        ".jpg": "image/jpeg",
+        ".jpeg": "image/jpeg",
+        ".png": "image/png",
+        ".webp": "image/webp",
+    }
+    max_bytes = 5 * 1024 * 1024
     for file in files:
         ext = os.path.splitext(file.filename or "")[1].lower()
-        if ext not in (".jpg", ".jpeg", ".png", ".webp"):
+        if ext not in allowed:
             raise HTTPException(400, f"Formato inválido: {file.filename}")
-        name = f"{u.id}_{uuid.uuid4().hex}{ext}"
-        with open(os.path.join(UPLOAD, name), "wb") as out:
-            out.write(await file.read())
-        path = "/uploads/" + name
+        content = await file.read()
+        if len(content) > max_bytes:
+            raise HTTPException(400, f"A foto {file.filename} excede o limite de 5 MB")
+        mime = allowed[ext]
+        path = f"data:{mime};base64,{base64.b64encode(content).decode('ascii')}"
         s.add(Photo(student_id=u.id, path=path))
-        saved.append(path)
+        saved.append({"filename": file.filename, "stored": True})
     s.commit()
-    return {"paths": saved, "count": len(saved)}
+    return {"files": saved, "count": len(saved)}
 
 
 @app.get("/api/photos/{sid}")
@@ -521,13 +522,3 @@ def student_photos(sid: int, u=Depends(me), s: Session = Depends(db)):
     )
     return [{"id": x.id, "path": x.path, "created_at": x.created_at} for x in rows]
 
-@app.get("/")
-def frontend_index():
-    return FileResponse(os.path.join(FRONTEND, "index.html"))
-
-
-app.mount(
-    "/",
-    StaticFiles(directory=FRONTEND, html=True),
-    name="frontend",
-)

@@ -269,7 +269,8 @@ async function fotosAlunos(){
 async function openStudentPhotos(id,name){
   if(tab!=="fotos"){tab="fotos"; await render();}
   const photos=await req('/photos/'+id); const base=API.replace(/\/api$/,'');
-  photoGallery.innerHTML=`<section class="card gallery-card"><h2>${name}</h2><div class="photo-grid">${photos.map(p=>`<a href="${base+p.path}" target="_blank"><img src="${base+p.path}" alt="Evolução de ${name}"><span>${new Date(p.created_at).toLocaleDateString('pt-BR')}</span></a>`).join('') || '<div class="empty">Este aluno ainda não enviou fotos.</div>'}</div></section>`;
+  const photoUrl=(path)=>path.startsWith('data:')?path:base+path;
+  photoGallery.innerHTML=`<section class="card gallery-card"><h2>${name}</h2><div class="photo-grid">${photos.map(p=>`<a href="${photoUrl(p.path)}" target="_blank"><img src="${photoUrl(p.path)}" alt="Evolução de ${name}"><span>${new Date(p.created_at).toLocaleDateString('pt-BR')}</span></a>`).join('') || '<div class="empty">Este aluno ainda não enviou fotos.</div>'}</div></section>`;
   photoGallery.scrollIntoView({behavior:'smooth'});
 }
 function contato(){
