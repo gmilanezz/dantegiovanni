@@ -19,6 +19,12 @@
       "destination": {
         "service": "backend"
       }
+    },
+    {
+      "source": "/(.*)",
+      "destination": {
+        "service": "backend"
+      }
     }
   ]
 }
