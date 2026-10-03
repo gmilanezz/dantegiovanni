@@ -16,7 +16,7 @@ async function req(p, o = {}) {
   if (!r.ok) throw new Error(d.detail || "Erro");
   return d;
 }
-const logo = () => `<img class="brand-logo" src="logo-dante.png" alt="Dante Giovanni Treinador">`;
+const logo = () => `<img class="brand-logo" src="/logo-dante.png" alt="Dante Giovanni Treinador">`;
 const CONTACT = { instagram: localStorage.DANTE_INSTAGRAM || "", whatsapp: localStorage.DANTE_WHATSAPP || "" };
 let activeWorkoutTimer = null;
 function login() {
@@ -220,7 +220,7 @@ async function finishWorkoutTimer(id,title){
 async function shareWorkoutCard(title,duration){
   const canvas=document.createElement('canvas'); canvas.width=1080; canvas.height=1920; const c=canvas.getContext('2d');
   c.fillStyle='#030303'; c.fillRect(0,0,1080,1920);
-  try{ const img=new Image(); img.src='logo-dante.png'; await img.decode(); c.drawImage(img,240,180,600,600); }catch(e){}
+  try{ const img=new Image(); img.src='/logo-dante.png'; await img.decode(); c.drawImage(img,240,180,600,600); }catch(e){}
   c.textAlign='center'; c.fillStyle='#65f6d2'; c.font='bold 54px Arial'; c.fillText('TREINO CONCLUÍDO',540,930);
   c.fillStyle='#fff'; c.font='bold 78px Arial'; wrapCanvasText(c,title.toUpperCase(),540,1050,850,92);
   c.fillStyle='#a9b0ae'; c.font='bold 36px Arial'; c.fillText('DURAÇÃO',540,1320);

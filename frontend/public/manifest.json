@@ -1,13 +1,13 @@
 {
   "name": "Dante Giovanni",
   "short_name": "Dante Giovanni",
-  "start_url": "./",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#050707",
   "theme_color": "#050707",
   "icons": [
     {
-      "src": "logo-dante.png",
+      "src": "/logo-dante.png",
       "sizes": "1024x1024",
       "type": "image/png",
       "purpose": "any maskable"
