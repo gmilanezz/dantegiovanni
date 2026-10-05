@@ -1,26 +1,12 @@
 __pycache__/
 *.py[cod]
-*$py.class
-*.pyd
-*.so
 
 .venv/
-venv/
-env/
-ENV/
 backend/.venv/
-
-.mypy_cache/
-.ruff_cache/
-.coverage
-htmlcov/
 
 *.db
 *.sqlite
 *.sqlite3
-
-# Banco atual do Dante Fit
-backend/dante.db
 
 backend/uploads/*
 !backend/uploads/.gitkeep
@@ -30,36 +16,25 @@ backend/uploads/*
 !.env.example
 
 node_modules/
-**/node_modules/
-
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
 
 dist/
 build/
-.cache/
-.parcel-cache/
 .vite/
-
-node_modules/.cache/gh-pages/
 
 .vscode/
 .idea/
 
 Thumbs.db
-Thumbs.db:encryptable
 Desktop.ini
-$RECYCLE.BIN/
-
 .DS_Store
 
+*.log
 *.tmp
 *.temp
-*.log
 *.bak
 *.swp
 *~
 
 *.zip
+
+/comandos.txt

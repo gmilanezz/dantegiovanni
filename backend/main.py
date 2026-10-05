@@ -200,31 +200,6 @@ class WeightIn(BaseModel):
     measured_on: date = date.today()
 
 
-@app.on_event("startup")
-def seed():
-    s = SessionLocal()
-    if not s.query(User).first():
-        admin = User(
-            username="admin",
-            password_hash=pwd.hash("admin123"),
-            name="Dante Giovanni",
-            role="admin",
-        )
-        s.add(admin)
-        s.flush()
-        for n in ["Gabriel", "Gustavo"]:
-            s.add(
-                User(
-                    username=n.lower(),
-                    password_hash=pwd.hash("treino123"),
-                    name=n,
-                    role="professor",
-                )
-            )
-        s.commit()
-    s.close()
-
-
 INVITE_CODE = os.getenv("DANTE_INVITE_CODE", "DG5A1")
 
 
@@ -247,8 +222,8 @@ def register(x: RegisterIn, s: Session = Depends(db)):
     if x.role not in ("professor", "student"):
         raise HTTPException(400, "Tipo de conta inválido")
     username = x.username.strip().lower()
-    if len(x.password) < 6:
-        raise HTTPException(400, "A senha deve ter pelo menos 6 caracteres")
+    if len(x.password) < 5:
+        raise HTTPException(400, "A senha deve ter pelo menos 5 caracteres")
     if s.query(User).filter(User.username == username).first():
         raise HTTPException(409, "Usuário já existe")
     professor_id = None
@@ -279,8 +254,8 @@ def reset_password(x: ResetPasswordIn, s: Session = Depends(db)):
     code = x.invite_code.strip().upper()
     if len(code) != 5 or not code.isalnum() or code != INVITE_CODE.upper():
         raise HTTPException(403, "Código Dante inválido")
-    if len(x.new_password) < 6:
-        raise HTTPException(400, "A nova senha deve ter pelo menos 6 caracteres")
+    if len(x.new_password) < 5:
+        raise HTTPException(400, "A nova senha deve ter pelo menos 5 caracteres")
     username = x.username.strip().lower()
     u = s.query(User).filter(User.username == username, User.active == True).first()
     if not u:
@@ -327,6 +302,8 @@ def students(u=Depends(me), s: Session = Depends(db)):
 @app.post("/api/students")
 def add_student(x: StudentIn, u=Depends(me), s: Session = Depends(db)):
     allow_prof(u)
+    if len(x.password) < 5:
+        raise HTTPException(400, "A senha deve ter pelo menos 5 caracteres")
     if s.query(User).filter(User.username == x.username).first():
         raise HTTPException(409, "Usuário já existe")
     st = User(
@@ -357,7 +334,7 @@ def del_student(sid: int, u=Depends(me), s: Session = Depends(db)):
 def lessons(team: bool = False, u=Depends(me), s: Session = Depends(db)):
     q = s.query(Lesson)
     if u.role == "professor" and not team:
-        q = q.filter(Lesson.professor_id == u.id)
+        q = q.filter((Lesson.professor_id == u.id) | (Lesson.professor_id.is_(None)))
     elif u.role == "student":
         q = q.filter(Lesson.student_id == u.id)
     users = {x.id: x.name for x in s.query(User).all()}
@@ -403,9 +380,9 @@ def del_lesson(lid: int, u=Depends(me), s: Session = Depends(db)):
 def workouts(u=Depends(me), s: Session = Depends(db)):
     q = s.query(Workout)
     if u.role == "student":
-        q = q.filter(Workout.student_id == u.id)
+        q = q.filter((Workout.student_id == u.id) | ((Workout.student_id.is_(None)) & (Workout.professor_id.is_(None))))
     elif u.role == "professor":
-        q = q.filter(Workout.professor_id == u.id)
+        q = q.filter((Workout.professor_id == u.id) | ((Workout.student_id.is_(None)) & (Workout.professor_id.is_(None))))
     return [
         {
             "id": x.id,
@@ -436,9 +413,10 @@ def workout_detail(wid: int, u=Depends(me), s: Session = Depends(db)):
     w = s.get(Workout, wid)
     if not w:
         raise HTTPException(404, "Treino não encontrado")
-    if u.role == "student" and w.student_id != u.id:
+    is_demo = w.student_id is None and w.professor_id is None
+    if not is_demo and u.role == "student" and w.student_id != u.id:
         raise HTTPException(403)
-    if u.role == "professor" and w.professor_id != u.id:
+    if not is_demo and u.role == "professor" and w.professor_id != u.id:
         raise HTTPException(403)
     return {
         "id": w.id,

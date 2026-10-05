@@ -7,3 +7,9 @@ python -m pip install --upgrade pip
 pip install -r requirements.txt
 Remove-Item Env:DATABASE_URL -ErrorAction SilentlyContinue
 python -m uvicorn main:app --reload
+
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\iniciar-local.ps1
+
+Remove-Item "backend\.venv" -Recurse -Force
+Remove-Item "frontend\node_modules" -Recurse -Force
