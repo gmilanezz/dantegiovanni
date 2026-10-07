@@ -481,14 +481,14 @@ async def photos(
         ".png": "image/png",
         ".webp": "image/webp",
     }
-    max_bytes = 5 * 1024 * 1024
+    max_bytes = 4 * 1024 * 1024
     for file in files:
         ext = os.path.splitext(file.filename or "")[1].lower()
         if ext not in allowed:
             raise HTTPException(400, f"Formato inválido: {file.filename}")
         content = await file.read()
         if len(content) > max_bytes:
-            raise HTTPException(400, f"A foto {file.filename} excede o limite de 5 MB")
+            raise HTTPException(400, f"A foto {file.filename} excede o limite de 4 MB")
         mime = allowed[ext]
         path = f"data:{mime};base64,{base64.b64encode(content).decode('ascii')}"
         s.add(Photo(student_id=u.id, path=path))

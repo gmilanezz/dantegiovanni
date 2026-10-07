@@ -234,6 +234,28 @@ async function complete(id) {
   await req("/workouts/" + id + "/complete", { method: "POST" });
   alert("Treino concluído!");
 }
+async function optimizePhoto(file) {
+  if (!file.type.startsWith("image/")) throw new Error("Selecione apenas arquivos de imagem.");
+
+  const bitmap = await createImageBitmap(file);
+  const maxSide = 1600;
+  const scale = Math.min(1, maxSide / Math.max(bitmap.width, bitmap.height));
+  const width = Math.max(1, Math.round(bitmap.width * scale));
+  const height = Math.max(1, Math.round(bitmap.height * scale));
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  canvas.getContext("2d").drawImage(bitmap, 0, 0, width, height);
+  bitmap.close?.();
+
+  const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.82));
+  if (!blob) throw new Error("Não foi possível preparar a foto para envio.");
+  if (blob.size > 3.5 * 1024 * 1024) throw new Error("A foto ainda ficou muito grande após a otimização.");
+
+  const baseName = (file.name || "foto").replace(/\.[^.]+$/, "");
+  return new File([blob], `${baseName}.jpg`, { type: "image/jpeg" });
+}
+
 async function evolucao() {
   let w = await req("/weights/" + user.id),
     max = Math.max(...w.map((x) => x.value), 1);
@@ -251,14 +273,43 @@ async function evolucao() {
   };
   photo.onsubmit = async (e) => {
     e.preventDefault();
-    let fd = new FormData();
-    [...img.files].forEach(file => fd.append("files", file));
-    let r = await fetch(API + "/photos", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${token}` },
-      body: fd,
-    });
-    alert(r.ok ? `${img.files.length} foto(s) enviada(s)` : "Erro no envio"); if(r.ok) render();
+    const files = [...img.files];
+    if (!files.length) return;
+
+    const button = e.currentTarget.querySelector("button[type=submit], button");
+    if (button) button.disabled = true;
+
+    try {
+      let sent = 0;
+      for (const file of files) {
+        const optimized = await optimizePhoto(file);
+        const fd = new FormData();
+        fd.append("files", optimized, optimized.name);
+
+        const r = await fetch(API + "/photos", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+          body: fd,
+        });
+
+        if (!r.ok) {
+          let detail = "Erro no envio da foto";
+          try {
+            const data = await r.json();
+            if (data?.detail) detail = data.detail;
+          } catch {}
+          if (r.status === 413) detail = "A foto ficou grande demais para o servidor. Tente outra imagem.";
+          throw new Error(detail);
+        }
+        sent++;
+      }
+      alert(`${sent} foto(s) enviada(s)`);
+      render();
+    } catch (err) {
+      alert(err?.message || "Erro no envio da foto");
+    } finally {
+      if (button) button.disabled = false;
+    }
   };
 }
 async function fotosAlunos(){
